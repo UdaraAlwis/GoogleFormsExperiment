@@ -4,7 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GoogleFormsExperiment
 {
@@ -14,11 +18,47 @@ namespace GoogleFormsExperiment
         {
             //await ExecuteGoogleFormsSubmitAsync();
 
-            var html = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
+            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
+            var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
+            
+            //await ScrapeListOfFieldsFromHtmlAsync(url);
 
+            await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
+
+            Console.ReadKey();
+
+            return 0;
+        }
+
+        private static async Task ScrapeListOfFieldsFromFacebookJsScriptAsync(string url)
+        {
             HtmlWeb web = new HtmlWeb();
+            var htmlDoc = web.Load(url);
 
-            var htmlDoc = web.Load(html);
+            var htmlNodes = htmlDoc.DocumentNode.SelectNodes("//script").Where(
+                x => x.GetAttributeValue("type", "").Equals("text/javascript") &&
+                     x.InnerHtml.Contains("FB_PUBLIC_LOAD_DATA_"));
+
+            var facebookJsScriptContent = htmlNodes.First().InnerHtml;
+
+            facebookJsScriptContent = facebookJsScriptContent.Replace("var FB_PUBLIC_LOAD_DATA_ = ", "");
+
+            var splitNodes = facebookJsScriptContent.Split("\n]\n]\n,");
+
+            //var firstQuestionNodes =  splitNodes[0].Split("\",null,");
+
+            // Identify Radio Button Question
+            var radioButtonQuestions = splitNodes.Where(x => x.Contains(",null,2,[[")).ToList();
+            foreach (var questionNode in radioButtonQuestions)
+            {
+                var radioButtonOptions = questionNode.Split(",null,null,null,0]");
+            }
+        }
+
+        private static async Task ScrapeListOfFieldsFromHtmlAsync(string url)
+        {
+            HtmlWeb web = new HtmlWeb();
+            var htmlDoc = web.Load(url);
 
             var htmlNodes = htmlDoc.DocumentNode.SelectNodes("//input").Where(
                 x => x.GetAttributeValue("name", "").Contains("entry.") &&
@@ -39,10 +79,6 @@ namespace GoogleFormsExperiment
                 //Console.WriteLine("Node Name: " + node.Name + "\n" + node.OuterHtml + "\n");
                 Console.WriteLine(node.GetAttributeValue("name", ""));
             }
-
-            Console.ReadKey();
-
-            return 0;
         }
 
         private static async Task ExecuteGoogleFormsSubmitAsync()
@@ -52,12 +88,17 @@ namespace GoogleFormsExperiment
             //var bodyValues = new Dictionary<string, string>
             //{
             //    {"entry.1277095329","Orange Snails"},
+
             //    {"entry.995005981","Banana Plums"},
+
             //    {"entry.1155533672","Monkeys with hoodies"},
+
             //    {"entry.1579749043","Jumping Apples"},
+
             //    {"entry.815399500_year","2019"},
             //    {"entry.815399500_month","11"},
             //    {"entry.815399500_day","11"},
+
             //    {"entry.940653577_hour","04"},
             //    {"entry.940653577_minute","12"},
             //};
