@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoogleFormsExperiment
 {
-    enum GoogleFormsFieldTypeEnum
+    public enum GoogleFormsFieldTypeEnum
     {
         ShortAnswerField = 0,
         ParagraphField = 1,
