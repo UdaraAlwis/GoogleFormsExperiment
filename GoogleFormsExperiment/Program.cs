@@ -41,26 +41,27 @@ namespace GoogleFormsExperiment
 
             var facebookJsScriptContent = htmlNodes.First().InnerHtml;
 
-            facebookJsScriptContent = facebookJsScriptContent.Replace("var FB_PUBLIC_LOAD_DATA_ = ", "").Replace(";","");
+            // cleaning up "var FB_PUBLIC_LOAD_DATA_ = " at the beginning and 
+            // and ";" at the end of the script text  
+            var beginIndex = facebookJsScriptContent.IndexOf("[", StringComparison.Ordinal);
+            var lastIndex = facebookJsScriptContent.LastIndexOf(";", StringComparison.Ordinal);
+            var facebookJsScriptContentCleanedUp = facebookJsScriptContent.Substring(beginIndex, lastIndex - beginIndex).Trim();
 
-            facebookJsScriptContent = Regex.Replace(facebookJsScriptContent, "(?<=[,[])\\s*,", "null,");
-            
-            var jArray =  JArray.Parse(facebookJsScriptContent);
+            var jArray =  JArray.Parse(facebookJsScriptContentCleanedUp);
+            var arrayOfFields = jArray[1][1];
 
-            var listOfQuestionsArray = jArray[1][1];
-
-            foreach (var item in listOfQuestionsArray)
+            foreach (var field in arrayOfFields)
             {
                 //Console.WriteLine("------" + item.ToString().Replace(Environment.NewLine, ""));
 
-                var question = item[1]; // Question
+                var question = field[1]; // Question
                 Console.WriteLine("------" + question.ToObject<string>());
 
-                var questionTypeCode = item[3].ToObject<GoogleFormsFieldTypeEnum>(); // Question Type Code   
+                var questionTypeCode = field[3].ToObject<GoogleFormsFieldTypeEnum>(); // Question Type Code   
                 Console.WriteLine("------" + questionTypeCode);
 
-                var answerSubmitId = item[4][0][0]; // Answer Submit Id
-                var answersList = item[4][0][1].ToList(); // Answers List
+                var answerSubmitId = field[4][0][0]; // Answer Submit Id
+                var answersList = field[4][0][1].ToList(); // Answers List
 
                 Console.WriteLine("------" + answerSubmitId + "\n\n");
             }
