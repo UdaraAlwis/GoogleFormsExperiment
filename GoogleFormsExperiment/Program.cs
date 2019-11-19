@@ -18,8 +18,8 @@ namespace GoogleFormsExperiment
         {
             //await ExecuteGoogleFormsSubmitAsync();
 
-            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
-            var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
+            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
+            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
             
             //await ScrapeListOfFieldsFromHtmlAsync(url);
 
@@ -51,14 +51,18 @@ namespace GoogleFormsExperiment
 
             foreach (var item in listOfQuestionsArray)
             {
-                Console.WriteLine("------" + item.ToString());
+                //Console.WriteLine("------" + item.ToString().Replace(Environment.NewLine, ""));
 
-                var question = item[1]; // Question   
+                var question = item[1]; // Question
+                Console.WriteLine("------" + question.ToObject<string>());
 
-                var questionTypeCode = item[3]; // Question Type Code   
+                var questionTypeCode = item[3].ToObject<GoogleFormsFieldTypeEnum>(); // Question Type Code   
+                Console.WriteLine("------" + questionTypeCode);
 
                 var answerSubmitId = item[4][0][0]; // Answer Submit Id
                 var answersList = item[4][0][1].ToList(); // Answers List
+
+                Console.WriteLine("------" + answerSubmitId + "\n\n");
             }
 
             //var splitNodes = facebookJsScriptContent.Split("\n]\n]\n,");
