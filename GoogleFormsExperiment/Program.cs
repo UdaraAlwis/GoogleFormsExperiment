@@ -18,9 +18,9 @@ namespace GoogleFormsExperiment
         {
             //await ExecuteGoogleFormsSubmitAsync();
 
-            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
-            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
-            
+            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
+            var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
+
             //await ScrapeListOfFieldsFromHtmlAsync(url);
 
             await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
@@ -52,18 +52,31 @@ namespace GoogleFormsExperiment
 
             foreach (var field in arrayOfFields)
             {
-                //Console.WriteLine("------" + item.ToString().Replace(Environment.NewLine, ""));
-
                 var question = field[1]; // Question
-                Console.WriteLine("------" + question.ToObject<string>());
+                Console.WriteLine("------QUESTION: " + question.ToObject<string>());
 
-                var questionTypeCode = field[3].ToObject<GoogleFormsFieldTypeEnum>(); // Question Type Code   
-                Console.WriteLine("------" + questionTypeCode);
+                var questionTypeCodeString = field[3].ToObject<int>(); // Question Type Code   
+                var isRecognizedFieldType = Enum.TryParse(questionTypeCodeString.ToString(), out GoogleFormsFieldTypeEnum questionTypeCode);
+                Console.WriteLine("------TYPE: " + questionTypeCode);
 
-                var answerSubmitId = field[4][0][0]; // Answer Submit Id
-                var answersList = field[4][0][1].ToList(); // Answers List
+                // Check if this Field is submittable or not
+                // ex: Image banner fields are not submittable
+                if (field.Count() > 4 && field[4].HasValues)
+                {
+                    var answerSubmitId = field[4][0][0]; // Get Answer Submit Id
+                    var answerOptionsList = field[4][0][1].ToList(); // Get Answers List
 
-                Console.WriteLine("------" + answerSubmitId + "\n\n");
+                    foreach (var answerOption in answerOptionsList)
+                    {
+                        Console.WriteLine("------ANSWER: " + answerOption[0].ToString());
+                    }
+
+                    Console.WriteLine("------SUBMITID: " + answerSubmitId + "\n\n");
+                }
+                else
+                {
+                    Console.WriteLine("------" + "NOSUBMITID" + "\n\n");
+                }
             }
 
             //var splitNodes = facebookJsScriptContent.Split("\n]\n]\n,");
