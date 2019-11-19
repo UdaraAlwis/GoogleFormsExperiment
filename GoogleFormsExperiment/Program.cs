@@ -41,18 +41,36 @@ namespace GoogleFormsExperiment
 
             var facebookJsScriptContent = htmlNodes.First().InnerHtml;
 
-            facebookJsScriptContent = facebookJsScriptContent.Replace("var FB_PUBLIC_LOAD_DATA_ = ", "");
+            facebookJsScriptContent = facebookJsScriptContent.Replace("var FB_PUBLIC_LOAD_DATA_ = ", "").Replace(";","");
 
-            var splitNodes = facebookJsScriptContent.Split("\n]\n]\n,");
+            facebookJsScriptContent = Regex.Replace(facebookJsScriptContent, "(?<=[,[])\\s*,", "null,");
+            
+            var jArray =  JArray.Parse(facebookJsScriptContent);
 
-            //var firstQuestionNodes =  splitNodes[0].Split("\",null,");
+            var listOfQuestionsArray = jArray[1][1];
 
-            // Identify Radio Button Question
-            var radioButtonQuestions = splitNodes.Where(x => x.Contains(",null,2,[[")).ToList();
-            foreach (var questionNode in radioButtonQuestions)
+            foreach (var item in listOfQuestionsArray)
             {
-                var radioButtonOptions = questionNode.Split(",null,null,null,0]");
+                Console.WriteLine("------" + item.ToString());
+
+                var question = item[1]; // Question   
+
+                var questionTypeCode = item[3]; // Question Type Code   
+
+                var answerSubmitId = item[4][0][0]; // Answer Submit Id
+                var answersList = item[4][0][1].ToList(); // Answers List
             }
+
+            //var splitNodes = facebookJsScriptContent.Split("\n]\n]\n,");
+
+            ////var firstQuestionNodes =  splitNodes[0].Split("\",null,");
+
+            //// Identify Radio Button Question
+            //var radioButtonQuestions = splitNodes.Where(x => x.Contains(",null,2,[[")).ToList();
+            //foreach (var questionNode in radioButtonQuestions)
+            //{
+            //    var radioButtonOptions = questionNode.Split(",null,null,null,0]");
+            //}
         }
 
         private static async Task ScrapeListOfFieldsFromHtmlAsync(string url)
