@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Newtonsoft.Json.Linq;
 using GoogleFormsExperiment.Models;
 
@@ -14,12 +15,12 @@ namespace GoogleFormsExperiment
         {
             //await ExecuteGoogleFormsSubmitAsync();
 
-            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
-            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
+            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
+            var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
 
-            //await ScrapeListOfFieldsFromHtmlAsync(url);
+            await ScrapeListOfFieldsFromHtmlAsync(url);
 
-            await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
+            //await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
 
             Console.ReadKey();
 
@@ -66,7 +67,9 @@ namespace GoogleFormsExperiment
                     GoogleFormField googleFormField = new GoogleFormField();
 
                     var answerSubmitId = field[4][0][0]; // Get Answer Submit Id
+                    var isAnswerRequired = field[4][0][2]; // Get if Answer is Required to be Submitted
                     googleFormField.SubmissionId = answerSubmitId.ToObject<string>();
+                    googleFormField.IsAnswerRequired = isAnswerRequired.ToObject<int>() == 1 ? true : false; // 1 or 0
 
                     var question = field[1]; // Question
                     googleFormField.QuestionString = question.ToObject<string>();
@@ -88,16 +91,16 @@ namespace GoogleFormsExperiment
                     // Printing Field Data
                     Console.WriteLine("QUESTION: " + googleFormField.QuestionString);
                     Console.WriteLine("TYPE: " + googleFormField.Type);
+                    Console.WriteLine("IS REQUIRED: " + (googleFormField.IsAnswerRequired? "YES":"NO"));
                     if (googleFormField.AnswerList.Count > 0)
                     {
                         Console.WriteLine("ANSWER LIST: ");
                         foreach (var answerOption in googleFormField.AnswerList)
                         {
-                            Console.WriteLine($"-{answerOption.ToString()}");
+                            Console.WriteLine($"-{answerOption.ToString()}"); 
                         }
                     }
                     Console.WriteLine("SUBMITID: " + googleFormField.SubmissionId + "\n\n");
-
 
                     Console.WriteLine("----------------------------------------\n\n");
                 }
@@ -109,12 +112,16 @@ namespace GoogleFormsExperiment
             HtmlWeb web = new HtmlWeb();
             var htmlDoc = web.Load(url);
 
-            var htmlNodes = htmlDoc.DocumentNode.SelectNodes("//input").Where(
-                x => x.GetAttributeValue("name", "").Contains("entry.") &&
-                     (x.GetAttributeValue("type", "").Equals("hidden") || x.GetAttributeValue("type", "").Equals("text")) &&
-                     !x.GetAttributeValue("name", "").Contains("_sentinel"));
+            var fields = new[] { "input", "textarea" };
+            var htmlNodes = htmlDoc.DocumentNode.Descendants().
+                                Where(x => fields.Contains(x.Name));
+
+            htmlNodes = htmlNodes.Where(
+                x => x.GetAttributeValue("name", "").Contains("entry.") && // Get all that contains "entry." in the name
+                !x.GetAttributeValue("name", "").Contains("_sentinel"));
 
             var htmlNodesList = htmlNodes.ToList();
+
             var groupedList = htmlNodesList.GroupBy(x => x.OuterHtml);
 
             var cleanedNodeList = new List<HtmlNode>();
@@ -123,7 +130,7 @@ namespace GoogleFormsExperiment
                 cleanedNodeList.Add(groupedItem.First());
             }
 
-            foreach (var node in cleanedNodeList)
+            foreach (var node in htmlNodesList)
             {
                 //Console.WriteLine("Node Name: " + node.Name + "\n" + node.OuterHtml + "\n");
                 Console.WriteLine(node.GetAttributeValue("name", ""));

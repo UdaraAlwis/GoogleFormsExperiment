@@ -29,6 +29,11 @@ namespace GoogleFormsExperiment.Models
         public List<string> AnswerList { get; set; } = new List<string>();
 
         /// <summary>
+        /// If the answer is required to Submit
+        /// </summary>
+        public bool IsAnswerRequired { get; set; }
+
+        /// <summary>
         /// User's answer to the question field
         /// </summary>
         public string UserAnswer { get; set; }
