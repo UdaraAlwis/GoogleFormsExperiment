@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using GoogleFormsExperiment.Models;
 
 namespace GoogleFormsExperiment
 {
@@ -13,8 +14,8 @@ namespace GoogleFormsExperiment
         {
             //await ExecuteGoogleFormsSubmitAsync();
 
-            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
-            var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
+            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
+            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
 
             //await ScrapeListOfFieldsFromHtmlAsync(url);
 
@@ -43,47 +44,64 @@ namespace GoogleFormsExperiment
             var facebookJsScriptContentCleanedUp = facebookJsScriptContent.Substring(beginIndex, lastIndex - beginIndex).Trim();
 
             var jArray =  JArray.Parse(facebookJsScriptContentCleanedUp);
+
+            var description = jArray[1][0].ToObject<string>();
+            var title = jArray[3].ToObject<string>();
+            var formId = jArray[14].ToObject<string>();
+            
+            Console.WriteLine("\n");
+            Console.WriteLine("Title: " + title);
+            Console.WriteLine("Description: " + description);
+            Console.WriteLine("Form ID: " + formId);
+            Console.WriteLine("\n");
+            
             var arrayOfFields = jArray[1][1];
 
             foreach (var field in arrayOfFields)
             {
-                var question = field[1]; // Question
-                Console.WriteLine("------QUESTION: " + question.ToObject<string>());
-
-                var questionTypeCodeString = field[3].ToObject<int>(); // Question Type Code   
-                var isRecognizedFieldType = Enum.TryParse(questionTypeCodeString.ToString(), out GoogleFormsFieldTypeEnum questionTypeCode);
-                Console.WriteLine("------TYPE: " + questionTypeCode);
-
                 // Check if this Field is submittable or not
                 // ex: Image banner fields are not submittable
                 if (field.Count() > 4 && field[4].HasValues)
                 {
-                    var answerSubmitId = field[4][0][0]; // Get Answer Submit Id
-                    var answerOptionsList = field[4][0][1].ToList(); // Get Answers List
+                    GoogleFormField googleFormField = new GoogleFormField();
 
-                    foreach (var answerOption in answerOptionsList)
+                    var answerSubmitId = field[4][0][0]; // Get Answer Submit Id
+                    googleFormField.SubmissionId = answerSubmitId.ToObject<string>();
+
+                    var question = field[1]; // Question
+                    googleFormField.QuestionString = question.ToObject<string>();
+
+                    var questionTypeCodeString = field[3].ToObject<int>(); // Question Type Code   
+                    var isRecognizedFieldType = Enum.TryParse(questionTypeCodeString.ToString(), out GoogleFormsFieldTypeEnum questionTypeCode);
+                    googleFormField.Type = questionTypeCode;
+
+                    var answerOptionsList = field[4][0][1].ToList(); // Get Answers List
+                    // List of Answers Available
+                    if (answerOptionsList.Count > 0) 
                     {
-                        Console.WriteLine("------ANSWER: " + answerOption[0].ToString());
+                        foreach (var answerOption in answerOptionsList)
+                        {
+                            googleFormField.AnswerList.Add(answerOption[0].ToString());
+                        }
                     }
 
-                    Console.WriteLine("------SUBMITID: " + answerSubmitId + "\n\n");
-                }
-                else
-                {
-                    Console.WriteLine("------" + "NOSUBMITID" + "\n\n");
+                    // Printing Field Data
+                    Console.WriteLine("QUESTION: " + googleFormField.QuestionString);
+                    Console.WriteLine("TYPE: " + googleFormField.Type);
+                    if (googleFormField.AnswerList.Count > 0)
+                    {
+                        Console.WriteLine("ANSWER LIST: ");
+                        foreach (var answerOption in googleFormField.AnswerList)
+                        {
+                            Console.WriteLine($"-{answerOption.ToString()}");
+                        }
+                    }
+                    Console.WriteLine("SUBMITID: " + googleFormField.SubmissionId + "\n\n");
+
+
+                    Console.WriteLine("----------------------------------------\n\n");
                 }
             }
-
-            //var splitNodes = facebookJsScriptContent.Split("\n]\n]\n,");
-
-            ////var firstQuestionNodes =  splitNodes[0].Split("\",null,");
-
-            //// Identify Radio Button Question
-            //var radioButtonQuestions = splitNodes.Where(x => x.Contains(",null,2,[[")).ToList();
-            //foreach (var questionNode in radioButtonQuestions)
-            //{
-            //    var radioButtonOptions = questionNode.Split(",null,null,null,0]");
-            //}
         }
 
         private static async Task ScrapeListOfFieldsFromHtmlAsync(string url)
