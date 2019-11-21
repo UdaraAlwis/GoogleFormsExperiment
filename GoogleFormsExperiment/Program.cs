@@ -16,11 +16,13 @@ namespace GoogleFormsExperiment
             //await ExecuteGoogleFormsSubmitAsync();
 
             //var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
-            var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
+            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
+
+            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSfkOny0JUs4NUmFdYAIo3rj-OE66kc9yuWpzTviCxxVVo3QxQ/viewform";
 
             await ScrapeListOfFieldsFromHtmlAsync(url);
 
-            //await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
+            await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
 
             Console.ReadKey();
 
@@ -112,7 +114,7 @@ namespace GoogleFormsExperiment
             HtmlWeb web = new HtmlWeb();
             var htmlDoc = web.Load(url);
 
-            var fields = new[] { "input", "textarea" };
+            var fields = new[] { "input", "textarea" }; // two types of fields
             var htmlNodes = htmlDoc.DocumentNode.Descendants().
                                 Where(x => fields.Contains(x.Name));
 
@@ -130,7 +132,7 @@ namespace GoogleFormsExperiment
                 cleanedNodeList.Add(groupedItem.First());
             }
 
-            foreach (var node in htmlNodesList)
+            foreach (var node in cleanedNodeList)
             {
                 //Console.WriteLine("Node Name: " + node.Name + "\n" + node.OuterHtml + "\n");
                 Console.WriteLine(node.GetAttributeValue("name", ""));
@@ -139,8 +141,11 @@ namespace GoogleFormsExperiment
 
         private static async Task ExecuteGoogleFormsSubmitAsync()
         {
+            //// Init HttpClient to send the request
             //HttpClient client = new HttpClient();
 
+            //// Build the Field Ids and Answers dictionary object
+            //// (replace with your Google Form Ids and answers)
             //var bodyValues = new Dictionary<string, string>
             //{
             //    {"entry.1277095329","Orange Snails"},
@@ -159,16 +164,19 @@ namespace GoogleFormsExperiment
             //    {"entry.940653577_minute","12"},
             //};
 
+            //// Encode object to application/x-www-form-urlencoded MIME type
             //var content = new FormUrlEncodedContent(bodyValues);
 
+            //// Post the request (replace with your Google Form link)
             //var response = await client.PostAsync(
             //    "https://docs.google.com/forms/d/e/" +
-            //    "1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA" +
+            //    "1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA" + 
             //    "/formResponse",
             //    content);
 
+            //// Use the StatusCode and Response Content
             //Console.WriteLine($"Status : {(int)response.StatusCode} {response.StatusCode.ToString()}");
             //Console.WriteLine($"Body : \n{await response.Content.ReadAsStringAsync()}");
         }
-	}
+    }
 }
