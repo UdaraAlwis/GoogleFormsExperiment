@@ -15,14 +15,12 @@ namespace GoogleFormsExperiment
         {
             //await ExecuteGoogleFormsSubmitAsync();
 
-            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
+            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
             //var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
-
-            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSfkOny0JUs4NUmFdYAIo3rj-OE66kc9yuWpzTviCxxVVo3QxQ/viewform";
 
             await ScrapeListOfFieldsFromHtmlAsync(url);
 
-            await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
+            //await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
 
             Console.ReadKey();
 
@@ -119,23 +117,26 @@ namespace GoogleFormsExperiment
                                 Where(x => fields.Contains(x.Name));
 
             htmlNodes = htmlNodes.Where(
-                x => x.GetAttributeValue("name", "").Contains("entry.") && // Get all that contains "entry." in the name
-                !x.GetAttributeValue("name", "").Contains("_sentinel"));
-
+                x => 
+                x.GetAttributeValue("name", "").Contains("entry.") && // Get all that contains "entry." in the name
+                !x.GetAttributeValue("name", "").Contains("_sentinel")); // Ignored the _sentinel elements of checkboxes field
+            
             var htmlNodesList = htmlNodes.ToList();
 
+            // remove any duplicates
             var groupedList = htmlNodesList.GroupBy(x => x.OuterHtml);
-
             var cleanedNodeList = new List<HtmlNode>();
             foreach (var groupedItem in groupedList)
             {
                 cleanedNodeList.Add(groupedItem.First());
             }
 
+            var fieldsList = new List<string>();
             foreach (var node in cleanedNodeList)
             {
-                //Console.WriteLine("Node Name: " + node.Name + "\n" + node.OuterHtml + "\n");
-                Console.WriteLine(node.GetAttributeValue("name", ""));
+                var fieldId = node.GetAttributeValue("name", "");
+                Console.WriteLine(fieldId);
+                fieldsList.Add(fieldId);
             }
         }
 
