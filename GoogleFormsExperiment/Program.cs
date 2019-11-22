@@ -30,7 +30,7 @@ namespace GoogleFormsExperiment
         private static async Task ScrapeListOfFieldsFromFacebookJsScriptAsync(string url)
         {
             HtmlWeb web = new HtmlWeb();
-            var htmlDoc = web.Load(url);
+            var htmlDoc = await web.LoadFromWebAsync(url);
 
             var htmlNodes = htmlDoc.DocumentNode.SelectNodes("//script").Where(
                 x => x.GetAttributeValue("type", "").Equals("text/javascript") &&
@@ -110,20 +110,23 @@ namespace GoogleFormsExperiment
         private static async Task ScrapeListOfFieldsFromHtmlAsync(string url)
         {
             HtmlWeb web = new HtmlWeb();
-            var htmlDoc = web.Load(url);
+            var htmlDoc = await web.LoadFromWebAsync(url);
 
             var fields = new[] { "input", "textarea" }; // two types of fields
             var htmlNodes = htmlDoc.DocumentNode.Descendants().
                                 Where(x => fields.Contains(x.Name));
 
+            // Filter out the elements we need
             htmlNodes = htmlNodes.Where(
-                x => 
-                x.GetAttributeValue("name", "").Contains("entry.") && // Get all that contains "entry." in the name
-                !x.GetAttributeValue("name", "").Contains("_sentinel")); // Ignored the _sentinel elements of checkboxes field
+                x =>
+                // Get all that elements contains "entry." prefix in the name
+                x.GetAttributeValue("name", "").Contains("entry.") &&
+                // Ignored the "_sentinel" elements rendered for checkboxes fields
+                !x.GetAttributeValue("name", "").Contains("_sentinel"));
             
             var htmlNodesList = htmlNodes.ToList();
 
-            // remove any duplicates
+            // remove any duplicates (possibly caused by Checkboxes Fields)
             var groupedList = htmlNodesList.GroupBy(x => x.OuterHtml);
             var cleanedNodeList = new List<HtmlNode>();
             foreach (var groupedItem in groupedList)
@@ -131,12 +134,14 @@ namespace GoogleFormsExperiment
                 cleanedNodeList.Add(groupedItem.First());
             }
 
+            // retrieve the Fields list
             var fieldsList = new List<string>();
             foreach (var node in cleanedNodeList)
             {
+                // grab the Field Id
                 var fieldId = node.GetAttributeValue("name", "");
-                Console.WriteLine(fieldId);
                 fieldsList.Add(fieldId);
+                Console.WriteLine(fieldId);
             }
         }
 
