@@ -1,11 +1,10 @@
-﻿using HtmlAgilityPack;
+﻿using GoogleFormsExperiment.Models;
+using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.XPath;
-using Newtonsoft.Json.Linq;
-using GoogleFormsExperiment.Models;
 
 namespace GoogleFormsExperiment
 {
@@ -18,7 +17,7 @@ namespace GoogleFormsExperiment
             var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
             //var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
 
-            await ScrapeListOfFieldsFromHtmlAsync(url);
+            await ScrapeOffListOfFieldIdsFromGoogleFormsAsync(url);
 
             //await ScrapeListOfFieldsFromFacebookJsScriptAsync(url);
 
@@ -27,10 +26,10 @@ namespace GoogleFormsExperiment
             return 0;
         }
 
-        private static async Task ScrapeListOfFieldsFromFacebookJsScriptAsync(string url)
+        private static async Task ScrapeListOfFieldsFromFacebookJsScriptAsync(string yourGoogleFormsUrl)
         {
             HtmlWeb web = new HtmlWeb();
-            var htmlDoc = await web.LoadFromWebAsync(url);
+            var htmlDoc = await web.LoadFromWebAsync(yourGoogleFormsUrl);
 
             var htmlNodes = htmlDoc.DocumentNode.SelectNodes("//script").Where(
                 x => x.GetAttributeValue("type", "").Equals("text/javascript") &&
@@ -44,18 +43,18 @@ namespace GoogleFormsExperiment
             var lastIndex = facebookJsScriptContent.LastIndexOf(";", StringComparison.Ordinal);
             var facebookJsScriptContentCleanedUp = facebookJsScriptContent.Substring(beginIndex, lastIndex - beginIndex).Trim();
 
-            var jArray =  JArray.Parse(facebookJsScriptContentCleanedUp);
+            var jArray = JArray.Parse(facebookJsScriptContentCleanedUp);
 
             var description = jArray[1][0].ToObject<string>();
             var title = jArray[3].ToObject<string>();
             var formId = jArray[14].ToObject<string>();
-            
+
             Console.WriteLine("\n");
             Console.WriteLine("Title: " + title);
             Console.WriteLine("Description: " + description);
             Console.WriteLine("Form ID: " + formId);
             Console.WriteLine("\n");
-            
+
             var arrayOfFields = jArray[1][1];
 
             foreach (var field in arrayOfFields)
@@ -80,7 +79,7 @@ namespace GoogleFormsExperiment
 
                     var answerOptionsList = field[4][0][1].ToList(); // Get Answers List
                     // List of Answers Available
-                    if (answerOptionsList.Count > 0) 
+                    if (answerOptionsList.Count > 0)
                     {
                         foreach (var answerOption in answerOptionsList)
                         {
@@ -91,13 +90,13 @@ namespace GoogleFormsExperiment
                     // Printing Field Data
                     Console.WriteLine("QUESTION: " + googleFormField.QuestionString);
                     Console.WriteLine("TYPE: " + googleFormField.Type);
-                    Console.WriteLine("IS REQUIRED: " + (googleFormField.IsAnswerRequired? "YES":"NO"));
+                    Console.WriteLine("IS REQUIRED: " + (googleFormField.IsAnswerRequired ? "YES" : "NO"));
                     if (googleFormField.AnswerList.Count > 0)
                     {
                         Console.WriteLine("ANSWER LIST: ");
                         foreach (var answerOption in googleFormField.AnswerList)
                         {
-                            Console.WriteLine($"-{answerOption.ToString()}"); 
+                            Console.WriteLine($"-{answerOption.ToString()}");
                         }
                     }
                     Console.WriteLine("SUBMITID: " + googleFormField.SubmissionId + "\n\n");
@@ -107,11 +106,12 @@ namespace GoogleFormsExperiment
             }
         }
 
-        private static async Task ScrapeListOfFieldsFromHtmlAsync(string url)
+        private static async Task<List<string>> ScrapeOffListOfFieldIdsFromGoogleFormsAsync(string yourGoogleFormsUrl)
         {
             HtmlWeb web = new HtmlWeb();
-            var htmlDoc = await web.LoadFromWebAsync(url);
+            var htmlDoc = await web.LoadFromWebAsync(yourGoogleFormsUrl);
 
+            // Select the "input", "textarea" elements from the html content
             var fields = new[] { "input", "textarea" }; // two types of fields
             var htmlNodes = htmlDoc.DocumentNode.Descendants().
                                 Where(x => fields.Contains(x.Name));
@@ -124,10 +124,8 @@ namespace GoogleFormsExperiment
                 // Ignored the "_sentinel" elements rendered for checkboxes fields
                 !x.GetAttributeValue("name", "").Contains("_sentinel"));
             
-            var htmlNodesList = htmlNodes.ToList();
-
             // remove any duplicates (possibly caused by Checkboxes Fields)
-            var groupedList = htmlNodesList.GroupBy(x => x.OuterHtml);
+            var groupedList = htmlNodes.GroupBy(x => x.OuterHtml);
             var cleanedNodeList = new List<HtmlNode>();
             foreach (var groupedItem in groupedList)
             {
@@ -135,14 +133,16 @@ namespace GoogleFormsExperiment
             }
 
             // retrieve the Fields list
-            var fieldsList = new List<string>();
+            var fieldIdList = new List<string>();
             foreach (var node in cleanedNodeList)
             {
                 // grab the Field Id
                 var fieldId = node.GetAttributeValue("name", "");
-                fieldsList.Add(fieldId);
+                fieldIdList.Add(fieldId);
                 Console.WriteLine(fieldId);
             }
+
+            return fieldIdList;
         }
 
         private static async Task ExecuteGoogleFormsSubmitAsync()
