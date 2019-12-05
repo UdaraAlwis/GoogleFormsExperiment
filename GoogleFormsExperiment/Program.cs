@@ -65,11 +65,6 @@ namespace GoogleFormsExperiment
                 {
                     GoogleFormField googleFormField = new GoogleFormField();
 
-                    var answerSubmitId = field[4][0][0]; // Get Answer Submit Id
-                    var isAnswerRequired = field[4][0][2]; // Get if Answer is Required to be Submitted
-                    googleFormField.SubmissionId = answerSubmitId.ToObject<string>();
-                    googleFormField.IsAnswerRequired = isAnswerRequired.ToObject<int>() == 1 ? true : false; // 1 or 0
-
                     var question = field[1]; // Question
                     googleFormField.QuestionString = question.ToObject<string>();
 
@@ -86,6 +81,11 @@ namespace GoogleFormsExperiment
                             googleFormField.AnswerList.Add(answerOption[0].ToString());
                         }
                     }
+
+                    var answerSubmitId = field[4][0][0]; // Get Answer Submit Id
+                    var isAnswerRequired = field[4][0][2]; // Get if Answer is Required to be Submitted
+                    googleFormField.SubmissionId = answerSubmitId.ToObject<string>();
+                    googleFormField.IsAnswerRequired = isAnswerRequired.ToObject<int>() == 1 ? true : false; // 1 or 0
 
                     // Printing Field Data
                     Console.WriteLine("QUESTION: " + googleFormField.QuestionString);
