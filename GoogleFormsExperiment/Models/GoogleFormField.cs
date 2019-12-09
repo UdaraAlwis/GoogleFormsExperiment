@@ -7,23 +7,24 @@ namespace GoogleFormsExperiment.Models
     public class GoogleFormField
     {
         /// <summary>
-        /// Type of Question Field
+        /// Type of the Question Field
         /// </summary>
         public GoogleFormsFieldTypeEnum Type { get; set; }
 
         /// <summary>
-        /// Question text of the field
+        /// Question text of the Field
         /// </summary>
         public string QuestionString { get; set; }
 
         /// <summary>
-        /// The Id need to be used 
+        /// The unique Id need to be used 
         /// when submitting the answer
+        /// I also refer to this as: Field Id
         /// </summary>
         public string SubmissionId { get; set; }
 
         /// <summary>
-        /// Answer List in any type of 
+        /// Available Answer List for any kind of 
         /// multiple answer selection field
         /// </summary>
         public List<string> AnswerList { get; set; } = new List<string>();
@@ -32,10 +33,5 @@ namespace GoogleFormsExperiment.Models
         /// If the answer is required to Submit
         /// </summary>
         public bool IsAnswerRequired { get; set; }
-
-        /// <summary>
-        /// User's answer to the question field
-        /// </summary>
-        public string UserAnswer { get; set; }
     }
 }

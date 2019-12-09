@@ -46,7 +46,7 @@ namespace GoogleFormsExperiment
             var jArray = JArray.Parse(facebookJsScriptContentCleanedUp);
 
             var description = jArray[1][0].ToObject<string>();
-            var title = jArray[3].ToObject<string>();
+            var title = jArray[1][8].ToObject<string>();
             var formId = jArray[14].ToObject<string>();
 
             Console.WriteLine("\n");
