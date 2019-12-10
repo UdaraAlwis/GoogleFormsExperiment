@@ -4,6 +4,9 @@ using System.Text;
 
 namespace GoogleFormsExperiment.Models
 {
+    /// <summary>
+    /// A Question Field in a Google Form
+    /// </summary>
     public class GoogleFormField
     {
         /// <summary>
