@@ -12,25 +12,25 @@ namespace GoogleFormsExperiment.Models
         /// <summary>
         /// Type of the Question Field
         /// </summary>
-        public GoogleFormsFieldTypeEnum Type { get; set; }
+        public GoogleFormsFieldTypeEnum QuestionType { get; set; }
 
         /// <summary>
         /// Question text of the Field
         /// </summary>
-        public string QuestionString { get; set; }
+        public string QuestionText { get; set; }
 
         /// <summary>
         /// The unique Id need to be used 
         /// when submitting the answer
         /// I also refer to this as: Field Id
         /// </summary>
-        public string SubmissionId { get; set; }
+        public string AnswerSubmissionId { get; set; }
 
         /// <summary>
         /// Available Answer List for any kind of 
         /// multiple answer selection field
         /// </summary>
-        public List<string> AnswerList { get; set; } = new List<string>();
+        public List<string> AnswerOptionList { get; set; } = new List<string>();
 
         /// <summary>
         /// If the answer is required to Submit
