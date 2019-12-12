@@ -24,13 +24,13 @@ namespace GoogleFormsExperiment.Models
         /// when submitting the answer
         /// I also refer to this as: Field Id
         /// </summary>
-        public string SubmissionId { get; set; }
+        public string AnswerSubmissionId { get; set; }
 
         /// <summary>
         /// Available Answer List for any kind of 
         /// multiple answer selection field
         /// </summary>
-        public List<string> AnswerList { get; set; } = new List<string>();
+        public List<string> AnswerOptionList { get; set; } = new List<string>();
 
         /// <summary>
         /// If the answer is required to Submit
