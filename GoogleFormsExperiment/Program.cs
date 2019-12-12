@@ -35,15 +35,16 @@ namespace GoogleFormsExperiment
                 x => x.GetAttributeValue("type", "").Equals("text/javascript") &&
                      x.InnerHtml.Contains("FB_PUBLIC_LOAD_DATA_"));
 
-            var facebookJsScriptContent = htmlNodes.First().InnerHtml;
+            var fbPublicLoadDataJsScriptContent = htmlNodes.First().InnerHtml;
 
             // cleaning up "var FB_PUBLIC_LOAD_DATA_ = " at the beginning and 
             // and ";" at the end of the script text  
-            var beginIndex = facebookJsScriptContent.IndexOf("[", StringComparison.Ordinal);
-            var lastIndex = facebookJsScriptContent.LastIndexOf(";", StringComparison.Ordinal);
-            var facebookJsScriptContentCleanedUp = facebookJsScriptContent.Substring(beginIndex, lastIndex - beginIndex).Trim();
+            var beginIndex = fbPublicLoadDataJsScriptContent.IndexOf("[", StringComparison.Ordinal);
+            var lastIndex = fbPublicLoadDataJsScriptContent.LastIndexOf(";", StringComparison.Ordinal);
+            var fbPublicJsScriptContentCleanedUp = fbPublicLoadDataJsScriptContent
+                                                        .Substring(beginIndex, lastIndex - beginIndex).Trim();
 
-            var jArray = JArray.Parse(facebookJsScriptContentCleanedUp);
+            var jArray = JArray.Parse(fbPublicJsScriptContentCleanedUp);
 
             var description = jArray[1][0].ToObject<string>();
             var title = jArray[1][8].ToObject<string>();
@@ -60,7 +61,10 @@ namespace GoogleFormsExperiment
             foreach (var field in arrayOfFields)
             {
                 // Check if this Field is submittable or not
-                // ex: Image banner fields are not submittable
+                // index [4] contains the Field Answer 
+                // Submit Id of a Field Object 
+                // ex: ignore Fields used as Description panels
+                // ex: ignore Image banner fields
                 if (field.Count() > 4 && field[4].HasValues)
                 {
                     GoogleFormField googleFormField = new GoogleFormField();
