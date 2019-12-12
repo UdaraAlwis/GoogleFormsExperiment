@@ -51,10 +51,9 @@ namespace GoogleFormsExperiment
             var title = jArray[1][8].ToObject<string>();
             var formId = jArray[14].ToObject<string>();
 
-            Console.WriteLine("\n");
-            Console.WriteLine("Title: " + title);
-            Console.WriteLine("Description: " + description);
-            Console.WriteLine("Form ID: " + formId);
+            Console.WriteLine("TITLE: " + title);
+            Console.WriteLine("DESCRIPTION: " + description);
+            Console.WriteLine("FORM ID: " + formId);
             Console.WriteLine("\n");
 
             var arrayOfFields = jArray[1][1];
@@ -101,9 +100,9 @@ namespace GoogleFormsExperiment
                             Console.WriteLine($"-{answerOption.ToString()}");
                         }
                     }
-                    Console.WriteLine("SUBMITID: " + answerSubmitId + "\n\n");
+                    Console.WriteLine("ANSWER SUBMIT ID: " + answerSubmitId + "\n");
 
-                    Console.WriteLine("----------------------------------------\n\n");
+                    Console.WriteLine("----------------------------------------\n");
                 }
             }
         }
