@@ -9,6 +9,8 @@ Retriving the list of Field IDs of a given Google Form using HTML content scrapi
 ### GoogleFormsLoadFormStructure -
 Access the Google Form structure skeleton programmatically in dotnet C#
 
+## Blog stories
+
 This is where my series of blog posts began: 
 https://theconfuzedsourcecode.wordpress.com/tag/google-forms-hacks/
 
