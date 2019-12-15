@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29430.225
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoogleFormsExperiment", "..\GoogleFormsExperiment\GoogleFormsExperiment\GoogleFormsExperiment.csproj", "{7491CA2C-9D80-46F2-9678-DC74F23AAEF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoogleFormsExperiment", "GoogleFormsExperiment\GoogleFormsExperiment.csproj", "{7491CA2C-9D80-46F2-9678-DC74F23AAEF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleFormsSubmitFormData", "..\GoogleFormsExperiment\GoogleFormsSubmitFormData\GoogleFormsSubmitFormData.csproj", "{06C13822-6B49-4C30-9561-2E03C8C5F838}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoogleFormsSubmitFormData", "GoogleFormsSubmitFormData\GoogleFormsSubmitFormData.csproj", "{06C13822-6B49-4C30-9561-2E03C8C5F838}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleFormsScrapeOffFieldIDs", "GoogleFormsScrapeOffFieldIDs\GoogleFormsScrapeOffFieldIDs.csproj", "{4476725B-8B92-4A3E-961C-390C081B0554}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{06C13822-6B49-4C30-9561-2E03C8C5F838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06C13822-6B49-4C30-9561-2E03C8C5F838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06C13822-6B49-4C30-9561-2E03C8C5F838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4476725B-8B92-4A3E-961C-390C081B0554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4476725B-8B92-4A3E-961C-390C081B0554}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4476725B-8B92-4A3E-961C-390C081B0554}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4476725B-8B92-4A3E-961C-390C081B0554}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
