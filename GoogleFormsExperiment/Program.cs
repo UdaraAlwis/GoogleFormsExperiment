@@ -151,44 +151,5 @@ namespace GoogleFormsExperiment
             return fieldIdList;
         }
 
-        private static async Task ExecuteGoogleFormsSubmitAsync()
-        {
-            //// Init HttpClient to send the request
-            //HttpClient client = new HttpClient();
-
-            //// Build the Field Ids and Answers dictionary object
-            //// (replace with your Google Form Ids and answers)
-            //var bodyValues = new Dictionary<string, string>
-            //{
-            //    {"entry.1277095329","Orange Snails"},
-
-            //    {"entry.995005981","Banana Plums"},
-
-            //    {"entry.1155533672","Monkeys with hoodies"},
-
-            //    {"entry.1579749043","Jumping Apples"},
-
-            //    {"entry.815399500_year","2019"},
-            //    {"entry.815399500_month","11"},
-            //    {"entry.815399500_day","11"},
-
-            //    {"entry.940653577_hour","04"},
-            //    {"entry.940653577_minute","12"},
-            //};
-
-            //// Encode object to application/x-www-form-urlencoded MIME type
-            //var content = new FormUrlEncodedContent(bodyValues);
-
-            //// Post the request (replace with your Google Form link)
-            //var response = await client.PostAsync(
-            //    "https://docs.google.com/forms/d/e/" +
-            //    "1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA" + 
-            //    "/formResponse",
-            //    content);
-
-            //// Use the StatusCode and Response Content
-            //Console.WriteLine($"Status : {(int)response.StatusCode} {response.StatusCode.ToString()}");
-            //Console.WriteLine($"Body : \n{await response.Content.ReadAsStringAsync()}");
-        }
     }
 }
