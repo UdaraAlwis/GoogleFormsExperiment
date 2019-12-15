@@ -12,12 +12,12 @@ namespace GoogleFormsExperiment.Models
         /// <summary>
         /// Type of the Question Field
         /// </summary>
-        public GoogleFormsFieldTypeEnum Type { get; set; }
+        public GoogleFormsFieldTypeEnum QuestionType { get; set; }
 
         /// <summary>
         /// Question text of the Field
         /// </summary>
-        public string QuestionString { get; set; }
+        public string QuestionText { get; set; }
 
         /// <summary>
         /// The unique Id need to be used 

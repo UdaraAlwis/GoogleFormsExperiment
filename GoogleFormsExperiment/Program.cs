@@ -1,5 +1,4 @@
-﻿using GoogleFormsExperiment.Helpers;
-using GoogleFormsExperiment.Models;
+﻿using GoogleFormsExperiment.Models;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System;
@@ -51,6 +50,7 @@ namespace GoogleFormsExperiment
             var title = jArray[1][8].ToObject<string>();
             var formId = jArray[14].ToObject<string>();
 
+            Console.WriteLine("\n");
             Console.WriteLine("TITLE: " + title);
             Console.WriteLine("DESCRIPTION: " + description);
             Console.WriteLine("FORM ID: " + formId);
@@ -67,40 +67,43 @@ namespace GoogleFormsExperiment
                 // ex: ignore Image banner fields
                 if (field.Count() > 4 && field[4].HasValues)
                 {
-                    var questionString = field[1].ToObject<string>(); ; // Question
+                    GoogleFormField googleFormField = new GoogleFormField();
+
+                    var question = field[1]; // Question
+                    googleFormField.QuestionText = question.ToObject<string>();
 
                     var questionTypeCodeString = field[3].ToObject<int>(); // Question Type Code   
                     var isRecognizedFieldType = Enum.TryParse(questionTypeCodeString.ToString(), out GoogleFormsFieldTypeEnum questionTypeCode);
-                    var type = questionTypeCode.GetDescription();
+                    googleFormField.QuestionType = questionTypeCode;
 
-                    List<string> answerOptionList = new List<string>();
                     var answerOptionsList = field[4][0][1].ToList(); // Get Answers List
                     // List of Answers Available
                     if (answerOptionsList.Count > 0)
                     {
                         foreach (var answerOption in answerOptionsList)
                         {
-                            answerOptionList.Add(answerOption[0].ToString());
+                            googleFormField.AnswerOptionList.Add(answerOption[0].ToString());
                         }
                     }
 
-                    var answerSubmitId = field[4][0][0].ToObject<string>(); ; // Get Answer Submit Id
-                    var isAnswerRequiredObject = field[4][0][2]; // Get if Answer is Required to be Submitted
-                    var isAnswerRequired = isAnswerRequiredObject.ToObject<int>() == 1 ? true : false; // 1 or 0
+                    var answerSubmitId = field[4][0][0]; // Get Answer Submit Id
+                    var isAnswerRequired = field[4][0][2]; // Get if Answer is Required to be Submitted
+                    googleFormField.AnswerSubmissionId = answerSubmitId.ToObject<string>();
+                    googleFormField.IsAnswerRequired = isAnswerRequired.ToObject<int>() == 1 ? true : false; // 1 or 0
 
                     // Printing Field Data
-                    Console.WriteLine("QUESTION: " + questionString);
-                    Console.WriteLine("TYPE: " + type);
-                    Console.WriteLine("IS REQUIRED: " + (isAnswerRequired ? "YES" : "NO"));
-                    if (answerOptionList.Count > 0)
+                    Console.WriteLine("QUESTION: " + googleFormField.QuestionText);
+                    Console.WriteLine("TYPE: " + googleFormField.QuestionType);
+                    Console.WriteLine("IS REQUIRED: " + (googleFormField.IsAnswerRequired ? "YES" : "NO"));
+                    if (googleFormField.AnswerOptionList.Count > 0)
                     {
                         Console.WriteLine("ANSWER LIST: ");
-                        foreach (var answerOption in answerOptionList)
+                        foreach (var answerOption in googleFormField.AnswerOptionList)
                         {
                             Console.WriteLine($"-{answerOption.ToString()}");
                         }
                     }
-                    Console.WriteLine("ANSWER SUBMIT ID: " + answerSubmitId + "\n");
+                    Console.WriteLine("SUBMITID: " + googleFormField.AnswerSubmissionId + "\n");
 
                     Console.WriteLine("----------------------------------------\n");
                 }
