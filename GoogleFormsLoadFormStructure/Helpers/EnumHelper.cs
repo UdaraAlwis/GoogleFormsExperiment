@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
-namespace GoogleFormsExperiment.Helpers
+namespace GoogleFormsLoadFormStructure.Helpers
 {
     public static class EnumHelpers
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GoogleFormsExperiment.Models
+namespace GoogleFormsLoadFormStructure.Models
 {
     public class GoogleForm
     {

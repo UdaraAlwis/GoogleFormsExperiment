@@ -1,5 +1,5 @@
-﻿using GoogleFormsExperiment.Helpers;
-using GoogleFormsExperiment.Models;
+﻿using GoogleFormsLoadFormStructure.Helpers;
+using GoogleFormsLoadFormStructure.Models;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,20 +7,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoogleFormsExperiment
+namespace GoogleFormsLoadFormStructure
 {
+    /// <summary>
+    /// Access the Google Form structure 
+    /// skeleton programmatically in dotnet C#
+    /// </summary>
     class Program
     {
         public static async Task<int> Main(string[] args)
         {
-            //await ExecuteGoogleFormsSubmitAsync();
+            // Retrieve the Field ID List of my sample Google Forms page
+            // https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform
 
-            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
-            //var url = @"https://docs.google.com/forms/d/e/1FAIpQLScFM2ZEl1lVERQSoiDbwKggoTilpEdFQx0NNAfmYvJYcL8_TQ/viewform";
+            var googleFormLink =
+            "https://docs.google.com/forms/d/e/" +
+            "1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA" +
+            "/formResponse";
 
-            //await ScrapeOffListOfFieldIdsFromGoogleFormsAsync(url);
-
-            await ScrapeOffFormSkeletonFromGoogleFormsAsync(url);
+            await ScrapeOffFormSkeletonFromGoogleFormsAsync(googleFormLink);
 
             Console.ReadKey();
 

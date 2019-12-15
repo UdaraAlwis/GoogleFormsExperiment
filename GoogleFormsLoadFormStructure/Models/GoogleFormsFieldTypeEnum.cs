@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace GoogleFormsExperiment.Models
+namespace GoogleFormsLoadFormStructure.Models
 {
     /// <summary>
     /// Found the Field type representation values with trial
