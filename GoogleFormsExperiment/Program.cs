@@ -1,4 +1,5 @@
-﻿using GoogleFormsExperiment.Models;
+﻿using GoogleFormsExperiment.Helpers;
+using GoogleFormsExperiment.Models;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System;
@@ -65,48 +66,49 @@ namespace GoogleFormsExperiment
                 // Submit Id of a Field Object 
                 // ex: ignore Fields used as Description panels
                 // ex: ignore Image banner fields
-                if (field.Count() > 4 && field[4].HasValues)
+                if (field.Count() < 4 && !field[4].HasValues)
+                    continue;
+
+                // Load the Question Field data
+                var questionTextValue = field[1]; // Get Question Text
+                var questionText = questionTextValue.ToObject<string>();
+
+                var questionTypeCodeValue = field[3].ToObject<int>(); // Get Question Type Code   
+                var isRecognizedFieldType = Enum.TryParse(questionTypeCodeValue.ToString(), 
+                                                out GoogleFormsFieldTypeEnum questionTypeEnum);
+                var questionType = questionTypeEnum.GetDescription();
+
+                var answerOptionsList = new List<string>();
+                var answerOptionsListValue = field[4][0][1].ToList(); // Get Answers List
+                // List of Answers Available
+                if (answerOptionsListValue.Count > 0)
                 {
-                    GoogleFormField googleFormField = new GoogleFormField();
-
-                    var question = field[1]; // Question
-                    googleFormField.QuestionText = question.ToObject<string>();
-
-                    var questionTypeCodeString = field[3].ToObject<int>(); // Question Type Code   
-                    var isRecognizedFieldType = Enum.TryParse(questionTypeCodeString.ToString(), out GoogleFormsFieldTypeEnum questionTypeCode);
-                    googleFormField.QuestionType = questionTypeCode;
-
-                    var answerOptionsList = field[4][0][1].ToList(); // Get Answers List
-                    // List of Answers Available
-                    if (answerOptionsList.Count > 0)
+                    foreach (var answerOption in answerOptionsListValue)
                     {
-                        foreach (var answerOption in answerOptionsList)
-                        {
-                            googleFormField.AnswerOptionList.Add(answerOption[0].ToString());
-                        }
+                        answerOptionsList.Add(answerOption[0].ToString());
                     }
-
-                    var answerSubmitId = field[4][0][0]; // Get Answer Submit Id
-                    var isAnswerRequired = field[4][0][2]; // Get if Answer is Required to be Submitted
-                    googleFormField.AnswerSubmissionId = answerSubmitId.ToObject<string>();
-                    googleFormField.IsAnswerRequired = isAnswerRequired.ToObject<int>() == 1 ? true : false; // 1 or 0
-
-                    // Printing Field Data
-                    Console.WriteLine("QUESTION: " + googleFormField.QuestionText);
-                    Console.WriteLine("TYPE: " + googleFormField.QuestionType);
-                    Console.WriteLine("IS REQUIRED: " + (googleFormField.IsAnswerRequired ? "YES" : "NO"));
-                    if (googleFormField.AnswerOptionList.Count > 0)
-                    {
-                        Console.WriteLine("ANSWER LIST: ");
-                        foreach (var answerOption in googleFormField.AnswerOptionList)
-                        {
-                            Console.WriteLine($"-{answerOption.ToString()}");
-                        }
-                    }
-                    Console.WriteLine("SUBMITID: " + googleFormField.AnswerSubmissionId + "\n");
-
-                    Console.WriteLine("----------------------------------------\n");
                 }
+
+                var answerSubmitIdValue = field[4][0][0]; // Get Answer Submit Id
+                var isAnswerRequiredValue = field[4][0][2]; // Get if Answer is Required to be Submitted
+                var answerSubmissionId = answerSubmitIdValue.ToObject<string>();
+                var isAnswerRequired = isAnswerRequiredValue.ToObject<int>() == 1 ? true : false; // 1 or 0
+
+                // Printing Field Data
+                Console.WriteLine("QUESTION: " + questionText);
+                Console.WriteLine("TYPE: " + questionType);
+                Console.WriteLine("IS REQUIRED: " + (isAnswerRequired ? "YES" : "NO"));
+                if (answerOptionsList.Count > 0)
+                {
+                    Console.WriteLine("ANSWER LIST: ");
+                    foreach (var answerOption in answerOptionsList)
+                    {
+                        Console.WriteLine($"-{answerOption.ToString()}");
+                    }
+                }
+                Console.WriteLine("SUBMITID: " + answerSubmissionId + "\n");
+
+                Console.WriteLine("----------------------------------------\n");
             }
         }
 
