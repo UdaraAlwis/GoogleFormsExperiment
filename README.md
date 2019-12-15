@@ -14,13 +14,13 @@ Access the complete Google Form structure skeleton programmatically, consisting 
 These little experiements led me to write up the series of blog posts: 
 https://theconfuzedsourcecode.wordpress.com/tag/google-forms-hacks/
 
-[Programmatically access your complete Google Forms skeleton!](https://theconfuzedsourcecode.wordpress.com/2019/12/15/programmatically-access-your-complete-google-forms-skeleton/)
+Post 4. [Programmatically access your complete Google Forms skeleton!](https://theconfuzedsourcecode.wordpress.com/2019/12/15/programmatically-access-your-complete-google-forms-skeleton/)
 
-[SCRIPTfully scrape off your Google Forms Field Ids…](https://theconfuzedsourcecode.wordpress.com/2019/11/24/scriptfully-scrape-off-your-google-forms-field-ids/)
+Post 3. [SCRIPTfully scrape off your Google Forms Field Ids…](https://theconfuzedsourcecode.wordpress.com/2019/11/24/scriptfully-scrape-off-your-google-forms-field-ids/)
 
-[You may RESTfully submit to your Google Forms…](https://theconfuzedsourcecode.wordpress.com/2019/11/11/you-may-restfully-submit-to-your-google-forms/)
+Post 2. [You may RESTfully submit to your Google Forms…](https://theconfuzedsourcecode.wordpress.com/2019/11/11/you-may-restfully-submit-to-your-google-forms/)
 
-[Let’s auto fill Google Forms with URL parameters…](https://theconfuzedsourcecode.wordpress.com/2019/11/10/lets-auto-fill-google-forms-with-url-parameters/)
+Post 1. [Let’s auto fill Google Forms with URL parameters…](https://theconfuzedsourcecode.wordpress.com/2019/11/10/lets-auto-fill-google-forms-with-url-parameters/)
 
 
 
