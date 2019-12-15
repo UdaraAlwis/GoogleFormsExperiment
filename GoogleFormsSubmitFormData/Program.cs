@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace GoogleFormsSubmitFormData
 {
+    /// <summary>
+    /// Submitting Data to Google Forms 
+    /// programatically using the REST API
+    /// </summary>
     class Program
     {
         public static async Task<int> Main(string[] args)
@@ -17,6 +21,7 @@ namespace GoogleFormsSubmitFormData
             "1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA" +
             "/formResponse";
 
+            // Given you have retrieved the list of Field Answer Submission IDs 
             // Build the Field Answer Submission Ids and Answer Values dictionary object
             // (replace with your Google Form Ids and answers)
             var formDataDdictionary = new Dictionary<string, string>

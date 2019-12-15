@@ -6,13 +6,28 @@ using System.Threading.Tasks;
 
 namespace GoogleFormsScrapeOffFieldIDs
 {
+    /// <summary>
+    /// Retriving the list of Field IDs of a 
+    /// given Google Form using HTML content scraping
+    /// </summary>
     class Program
     {
         public static async Task<int> Main(string[] args)
         {
-            var url = @"https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform";
+            // Retrieve the Field ID List of my sample Google Forms page
+            // https://docs.google.com/forms/d/e/1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA/viewform
 
-            await ScrapeOffListOfFieldIdsFromGoogleFormsAsync(url);
+            // Each Question Field in your Google Form has a unique identier
+            // These IDs are required to submit data for each Field in Google Forms
+            // We need to bundle Answer data against those Field Answer Submission Ids
+            // When we Submit data to our Google Form programmatically
+
+            var googleFormLink =
+            "https://docs.google.com/forms/d/e/" +
+            "1FAIpQLSeuZiyN-uQBbmmSLxT81xGUfgjMQpUFyJ4D7r-0zjegTy_0HA" +
+            "/formResponse";
+
+            await ScrapeOffListOfFieldIdsFromGoogleFormsAsync(googleFormLink);
 
             Console.ReadKey();
 
