@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29430.225
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoogleFormsExperiment", "GoogleFormsExperiment.csproj", "{7491CA2C-9D80-46F2-9678-DC74F23AAEF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoogleFormsExperiment", "..\GoogleFormsScrapeTool\GoogleFormsExperiment\GoogleFormsExperiment.csproj", "{7491CA2C-9D80-46F2-9678-DC74F23AAEF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleFormsSubmitFormData", "..\GoogleFormsSubmitFormData\GoogleFormsSubmitFormData.csproj", "{06C13822-6B49-4C30-9561-2E03C8C5F838}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleFormsSubmitFormData", "..\GoogleFormsScrapeTool\GoogleFormsSubmitFormData\GoogleFormsSubmitFormData.csproj", "{06C13822-6B49-4C30-9561-2E03C8C5F838}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
