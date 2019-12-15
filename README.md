@@ -11,7 +11,7 @@ Access the Google Form structure skeleton programmatically in dotnet C#
 
 ## Blog stories
 
-This is where my series of blog posts began: 
+These little experiements led me to write up the series of blog posts: 
 https://theconfuzedsourcecode.wordpress.com/tag/google-forms-hacks/
 
 [Programmatically access your complete Google Forms skeleton!](https://theconfuzedsourcecode.wordpress.com/2019/12/15/programmatically-access-your-complete-google-forms-skeleton/)
